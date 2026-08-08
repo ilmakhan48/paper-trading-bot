@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PAPER-TRADING-BOT — Technical Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 0; }
+  body { margin: 0; font-family: 'Inter', sans-serif; color: #111111; background: #ffffff; }
+
+  .page { width: 210mm; min-height: 297mm; padding: 18mm 16mm; page-break-after: always; position: relative; }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- cover ---------- */
+  .cover { background: #0A0A0A; color: #FFFFFF; display: flex; flex-direction: column; justify-content: center; }
+  .cover .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #AAAAAA; margin-bottom: 14px;
+  }
+  .cover h1 { font-size: 52px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px 0; line-height: 1.05; }
+  .cover .sub { font-size: 15px; color: #CCCCCC; max-width: 460px; line-height: 1.6; margin: 14px 0 34px 0; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+  .badge-chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; border: 1px solid #444; color: #EEEEEE;
+    padding: 5px 12px; border-radius: 3px;
+  }
+  .cover-table { width: 100%; border-top: 1px solid #333; margin-top: 10px; }
+  .cover-table tr { border-bottom: 1px solid #262626; }
+  .cover-table td { padding: 9px 0; font-size: 12.5px; }
+  .cover-table td:first-child { color: #999999; width: 190px; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .cover-table td:last-child { color: #F2F2F2; }
+  .cover .meta {
+    position: absolute; bottom: 16mm; left: 16mm; right: 16mm; display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #888; border-top: 1px solid #333; padding-top: 12px;
+  }
+
+  /* ---------- content pages ---------- */
+  .content { background: #ffffff; color: #1A1A1A; }
+  .content h2 {
+    font-size: 22px; font-weight: 800; color: #0A0A0A; border-bottom: 3px solid #0A0A0A;
+    padding-bottom: 10px; margin: 0 0 6px 0;
+  }
+  .content h2 .num { font-family: 'JetBrains Mono', monospace; color: #999999; margin-right: 10px; }
+  .content .kicker { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #777; margin: 0 0 18px 0; font-style: italic; }
+  .content h3 { font-size: 14.5px; font-weight: 700; color: #111; margin: 26px 0 8px 0; }
+  .content p { font-size: 13px; line-height: 1.7; color: #333333; margin: 6px 0; }
+  .content .lede {
+    font-size: 13.5px; line-height: 1.75; color: #111; background: #F4F4F4; border-left: 3px solid #0A0A0A;
+    padding: 13px 16px; margin-bottom: 20px;
+  }
+  .indent-block { margin: 4px 0 14px 0; }
+  .indent-block .term { font-weight: 700; font-size: 12.5px; color: #0A0A0A; }
+  .indent-block .desc { font-size: 12.5px; color: #444; line-height: 1.65; margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 20px 0; font-size: 12px; }
+  th { text-align: left; background: #0A0A0A; color: #FFFFFF; padding: 7px 11px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.03em; text-transform: uppercase; }
+  td { padding: 7px 11px; border-bottom: 1px solid #DDDDDD; color: #333; }
+  .content tr:nth-child(even) td { background: #F7F7F7; }
+
+  .code-block { background: #0A0A0A; border-radius: 4px; padding: 13px 15px; margin: 8px 0 18px 0; }
+  .code-block .tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #AAAAAA; margin-bottom: 8px; display: block; }
+  .code-block pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.6; color: #EEEEEE; white-space: pre-wrap; word-break: break-word; }
+  .code-block .comment { color: #888; }
+
+  .diagram { background: #0A0A0A; color: #EEEEEE; border-radius: 4px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 9px; line-height: 1.5; white-space: pre; overflow-x: auto; }
+
+  .callout { background: #F4F4F4; border: 1px solid #CCCCCC; border-left: 3px solid #0A0A0A; padding: 13px 16px; margin: 10px 0 18px 0; font-size: 12px; line-height: 1.65; }
+  .callout .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #555; display: block; margin-bottom: 5px; font-weight: 700; }
+
+  .footer-strip {
+    position: absolute; bottom: 10mm; left: 16mm; right: 16mm; display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #999; border-top: 1px solid #DDDDDD; padding-top: 8px;
+  }
+
+  .status-complete { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<section class="page cover">
+  <div class="kicker">Internal Engineering Report</div>
+  <h1>PAPER-TRADING-BOT</h1>
+  <div class="sub">
+    A crypto paper-trading system that trades BTC, ETH, and SOL against real live market prices with simulated capital — deterministic rule-based strategies, a real historical backtest gate, half-Kelly position sizing, and a periodic self re-vetting loop that promotes and demotes its own strategies as market conditions change.
+  </div>
+  <div class="badges">
+    <span class="badge-chip">Python 3.9</span>
+    <span class="badge-chip">Streamlit</span>
+    <span class="badge-chip">SQLite</span>
+    <span class="badge-chip">Binance REST API</span>
+    <span class="badge-chip">Altair</span>
+    <span class="badge-chip">pandas</span>
+    <span class="badge-chip">pytest</span>
+  </div>
+  <table class="cover-table">
+    <tr><td>Project Type</td><td>Autonomous paper-trading system (background process + dashboard)</td></tr>
+    <tr><td>Assets Traded</td><td>BTC/USDT, ETH/USDT, SOL/USDT (Binance spot)</td></tr>
+    <tr><td>Execution Mode</td><td>Simulated — no real funds, no exchange account connected</td></tr>
+    <tr><td>Data Source</td><td>Binance public REST API (unauthenticated)</td></tr>
+    <tr><td>Persistence</td><td>SQLite — trades, equity history, strategy vetting log</td></tr>
+    <tr><td>Core Differentiator</td><td>Periodic strategy re-vetting — promotes/demotes on fresh backtest results</td></tr>
+  </table>
+  <div class="meta">
+    <span>v1.0 — Technical Report</span>
+    <span>real prices, fake money, and it never lies.</span>
+  </div>
+</section>
+
+<!-- ===================== 01 VISION ===================== -->
+<section class="page content">
+  <h2><span class="num">01</span>Project Vision</h2>
+  <div class="kicker">Why this system exists and what it refuses to do</div>
+  <p class="lede">
+    Most trading-bot demos fake something — a fill price, a win rate, a backtest result. This system was built around the opposite constraint: every price, fee, and profit shown anywhere in the system must be real or explicitly absent. If a live price can't be fetched, the system skips that unit of work and says so — it never substitutes a guessed or stale number and presents it as current.
+  </p>
+
+  <h3>1.1 What It Does</h3>
+  <div class="indent-block">
+    <div class="term">Continuous Paper Trading</div>
+    <div class="desc">Runs a background loop that polls live Binance prices every 5 minutes, evaluates three independent strategies per symbol, and opens/closes simulated positions with real transaction costs applied.</div>
+  </div>
+  <div class="indent-block">
+    <div class="term">Earned Strategy Access</div>
+    <div class="desc">No strategy trades live by default. Each must first pass a real backtest against historical candles (Sharpe ratio, max drawdown, and minimum trade count thresholds) before it is allowed to open a position.</div>
+  </div>
+  <div class="indent-block">
+    <div class="term">Continuous Self-Correction</div>
+    <div class="desc">Every 72 cycles (~6 hours) the system re-runs the same backtest gate against fresh data. A strategy that stops working is demoted; one that starts working is promoted — automatically, without manual intervention.</div>
+  </div>
+
+  <h3>1.2 What It Does Not Do</h3>
+  <p>It does not place real orders, hold real funds, or authenticate against any exchange account. There is no order-routing code, no withdrawal capability, and no API key anywhere in the system — the market-data endpoints used are public and unauthenticated.</p>
+
+  <h3>1.3 Supported Markets</h3>
+  <table>
+    <tr><th>Symbol</th><th>Pair</th><th>Data Granularity Used</th><th>Strategies Evaluated</th></tr>
+    <tr><td>BTC</td><td>BTCUSDT</td><td>Live tick (5-min poll) + 1h candles (vetting)</td><td>SMA Crossover, RSI, Momentum</td></tr>
+    <tr><td>ETH</td><td>ETHUSDT</td><td>Live tick (5-min poll) + 1h candles (vetting)</td><td>SMA Crossover, RSI, Momentum</td></tr>
+    <tr><td>SOL</td><td>SOLUSDT</td><td>Live tick (5-min poll) + 1h candles (vetting)</td><td>SMA Crossover, RSI, Momentum</td></tr>
+  </table>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 01 · Project Vision</span></div>
+</section>
+
+<!-- ===================== 02 ARCHITECTURE ===================== -->
+<section class="page content">
+  <h2><span class="num">02</span>System Architecture &amp; Technology Stack</h2>
+  <div class="kicker">Two decoupled processes, one shared datastore</div>
+  <p class="lede">
+    The trading loop and the dashboard are independent OS processes that never call each other directly — they communicate only through a shared SQLite file. The loop is the sole writer; the dashboard is a read-only consumer plus one live price call of its own for unrealized P&amp;L display.
+  </p>
+  <div class="diagram">                    ┌─────────────────────────┐
+                    │   Binance Public REST    │
+                    │  api.binance.com/api/v3  │
+                    │  (ticker/price, klines)  │
+                    └────────────┬─────────────┘
+                                 │  live price + candle data
+                                 ▼
+┌──────────────────────────────────────────────────────────────┐
+│                     LOOP PROCESS (background, runs forever)     │
+│                                                                  │
+│  vet_strategies() ──▶ run_backtest() ──▶ approved strategy list │
+│  (every 72 cycles)     (Sharpe / drawdown /                     │
+│                          trade-count gate)                      │
+│                                                                  │
+│  live price ──▶ strategy.signal() ──▶ buy / sell / hold         │
+│  (per symbol,        (SMA / RSI /                                │
+│   per cycle)           Momentum)                                 │
+│                              │                                   │
+│                              ▼                                   │
+│                position_size() — half-Kelly sizing                │
+│                (real win-rate + payoff ratio)                     │
+│                              │                                   │
+│                              ▼                                   │
+│                Broker — fee + slippage, mutates Portfolio         │
+└───────────────────────────────┬────────────────────────────────┘
+                                 ▼
+                  ┌─────────────────────────────┐
+                  │   SQLite (single .db file)    │
+                  │ trades / equity_history /     │
+                  │ strategy_runs                 │
+                  └───────────────┬───────────────┘
+                                  ▼
+                  ┌─────────────────────────────┐
+                  │       DASHBOARD PROCESS        │
+                  │  Streamlit — reads DB + one    │
+                  │  live price call per render     │
+                  └─────────────────────────────┘</div>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 02 · Architecture</span></div>
+</section>
+
+<section class="page content">
+  <div class="kicker">02 · System Architecture &amp; Technology Stack (continued)</div>
+  <h3>2.1 Module Layout</h3>
+  <table>
+    <tr><th>Layer</th><th>Responsibility</th></tr>
+    <tr><td>data/</td><td>Live price + historical candle fetch from Binance public REST</td></tr>
+    <tr><td>strategies/</td><td>Three deterministic signal generators (SMA cross, RSI, momentum)</td></tr>
+    <tr><td>backtest/</td><td>Historical simulation + pass/fail gate (Sharpe, drawdown, trade count)</td></tr>
+    <tr><td>sizing/</td><td>Half-Kelly position sizing from real backtested trade outcomes</td></tr>
+    <tr><td>engine/</td><td>Portfolio state, order fill logic (fees + slippage), SQLite schema/CRUD</td></tr>
+    <tr><td>loop/</td><td>Orchestrates the full cycle — poll, evaluate, act, log, re-vet, sleep</td></tr>
+    <tr><td>dashboard/</td><td>Read-only Streamlit UI over the same database</td></tr>
+  </table>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 02 · Architecture</span></div>
+</section>
+
+<!-- ===================== 03 SIGNAL & RISK PIPELINE ===================== -->
+<section class="page content">
+  <h2><span class="num">03</span>Signal &amp; Risk Pipeline</h2>
+  <div class="kicker">Three deterministic strategies, gated by a real backtest, sized by real edge</div>
+
+  <h3>3.1 Strategy Layer — Deterministic, No Runtime Inference</h3>
+  <p>Each strategy is a pure function of price history: <code>signal(closes) -&gt; "buy" | "sell" | "hold"</code>. No model inference, no external calls — same input always produces the same output.</p>
+  <div class="code-block">
+    <span class="tag">SMA Crossover — fast=10, slow=30</span>
+<pre>if fast_prev <= slow_prev and fast_now > slow_now: return "buy"
+if fast_prev >= slow_prev and fast_now < slow_now: return "sell"</pre>
+  </div>
+  <div class="code-block">
+    <span class="tag">RSI Threshold — period=14, oversold=30, overbought=70</span>
+<pre>if rsi_prev <= oversold and rsi_now > oversold: return "buy"
+if rsi_prev >= overbought and rsi_now < overbought: return "sell"</pre>
+  </div>
+  <div class="code-block">
+    <span class="tag">Momentum — lookback=20, threshold=0.0</span>
+<pre>ret = (closes[-1] - closes[-(lookback+1)]) / closes[-(lookback+1)]
+if ret > threshold: return "buy"
+if ret < -threshold: return "sell"</pre>
+  </div>
+
+  <h3>3.2 Backtest Pass Gate</h3>
+  <p>A strategy earns live trading rights only if it clears all three thresholds on real historical data:</p>
+  <div class="code-block">
+    <span class="tag">Pass Criteria</span>
+<pre>passed = sharpe > 0 and max_drawdown < 0.5 and num_trades >= 2</pre>
+  </div>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 03 · Signal &amp; Risk Pipeline</span></div>
+</section>
+
+<section class="page content">
+  <div class="kicker">03 · Signal &amp; Risk Pipeline (continued)</div>
+  <h3>3.3 Half-Kelly Position Sizing</h3>
+  <p>Position size is derived from each strategy's own real backtested win rate and payoff ratio — never a fixed percentage of the account:</p>
+  <div class="code-block">
+    <span class="tag">Kelly Fraction</span>
+<pre>def kelly_fraction(win_rate, payoff_ratio):
+    p, q, b = win_rate, 1 - win_rate, payoff_ratio
+    if b <= 0: return 0.0
+    return max(0.0, min((b*p - q) / b, 1.0))
+
+def position_size(equity, win_rate, payoff_ratio, fraction=0.5):
+    return equity * kelly_fraction(win_rate, payoff_ratio) * fraction</pre>
+  </div>
+  <div class="callout">
+    <span class="label">Measured — not estimated</span>
+    A single backtest pass over 500 hourly candles (SMA Crossover strategy) executes in <b>5.0 ms</b> on commodity hardware, producing 20 simulated trades and a real Sharpe ratio. Timed directly against this codebase, not projected.
+  </div>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 03 · Signal &amp; Risk Pipeline</span></div>
+</section>
+
+<!-- ===================== 04 SELF-IMPROVEMENT LAYER ===================== -->
+<section class="page content">
+  <h2><span class="num">04</span>Self-Improvement Layer</h2>
+  <div class="kicker">The system's standout feature — it re-earns its own trading rights on a schedule</div>
+  <p class="lede">
+    A one-time vetting decision at startup is not trusted forever. Every 72 cycles (~6 hours at the 5-minute poll interval) every strategy is re-backtested against a fresh 500-candle window. Strategies that stop performing are automatically benched; strategies that start performing are automatically re-admitted — with no manual review step.
+  </p>
+  <div class="code-block">
+    <span class="tag">Periodic Re-vetting</span>
+<pre>REVET_INTERVAL_CYCLES = 72  <span class="comment">// 6 hours at the 300s poll interval</span>
+
+def maybe_revet(conn, cycles_since_vet, approved_strategies, ...):
+    cycles_since_vet += 1
+    if cycles_since_vet < revet_interval:
+        return approved_strategies, cycles_since_vet
+    try:
+        new_approved, _ = vet_fn(conn)
+    except (PriceFetchError, RequestException):
+        <span class="comment">// keep current approvals, retry next interval — never crash</span>
+        return approved_strategies, 0
+    return new_approved, 0</pre>
+  </div>
+
+  <h3>4.1 Demotion Without Abandonment</h3>
+  <p>A demoted strategy is blocked from opening <i>new</i> positions, but it is still evaluated every cycle so any position it already holds can close on its own exit signal — no forced liquidation, no orphaned trades left unmanaged on the books.</p>
+
+  <h3>4.2 Fault Isolation</h3>
+  <p>A failed re-vet (network error, malformed response) never crashes the loop and never silently approves everything by default. It keeps the current approval set and retries at the next full interval — the same fail-safe posture applied to every network call in the system.</p>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 04 · Self-Improvement Layer</span></div>
+</section>
+
+<!-- ===================== 05 DASHBOARD ===================== -->
+<section class="page content">
+  <h2><span class="num">05</span>Dashboard</h2>
+  <div class="kicker">Read-only Streamlit interface over the live database</div>
+  <p class="lede">The dashboard never trades and never writes to the database — it is a pure observation layer that renders the same tables the loop writes to, plus one live price call of its own for unrealized P&amp;L on open positions.</p>
+
+  <h3>5.1 Layout</h3>
+  <table>
+    <tr><th>Section</th><th>Content</th><th>Data Source</th></tr>
+    <tr><td>Wallet</td><td>Cash, invested capital, total &amp; today's P&amp;L</td><td>Computed live from trades + one price call</td></tr>
+    <tr><td>By Coin</td><td>Per-symbol position, invested amount, 24h sparkline</td><td>trades table + 24 hourly candles</td></tr>
+    <tr><td>Equity Curve</td><td>Gradient-filled area chart of total equity over time</td><td>equity_history table</td></tr>
+    <tr><td>Open Positions</td><td>Color-coded ticket cards by unrealized P&amp;L sign</td><td>trades table (open rows) + live price</td></tr>
+    <tr><td>Trade Log</td><td>Full historical trade table</td><td>trades table</td></tr>
+    <tr><td>Strategy Vetting</td><td>Honest pass/fail history, not curated</td><td>strategy_runs table</td></tr>
+  </table>
+
+  <h3>5.2 Failure Handling</h3>
+  <p>Every live price call on the dashboard is wrapped to catch both API-level errors and raw network failures (DNS, connection refused, timeout). On failure, the affected section shows an explicit warning banner and falls back to the last known entry price for display purposes — the page never crashes and never silently substitutes a fabricated number.</p>
+
+  <h3>5.3 Optional Auto-Refresh</h3>
+  <p>An opt-in toggle (default off) reloads the page every 30 seconds via a plain HTML meta-refresh tag — no polling loop, no additional dependency, no blocking of the underlying script thread.</p>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 05 · Dashboard</span></div>
+</section>
+
+<!-- ===================== 06 BACKEND & DATA FLOW ===================== -->
+<section class="page content">
+  <h2><span class="num">06</span>Backend Services, Data Flow &amp; Storage</h2>
+  <div class="kicker">The 11-step cycle the loop executes every 300 seconds</div>
+
+  <h3>6.1 Database Schema</h3>
+  <table>
+    <tr><th>Table</th><th>Key Columns</th></tr>
+    <tr><td>trades</td><td>id, symbol, side, qty, open_price, close_price, open_fee, close_fee, slippage, strategy, opened_at, closed_at, pnl</td></tr>
+    <tr><td>equity_history</td><td>id, timestamp, equity</td></tr>
+    <tr><td>strategy_runs</td><td>id, strategy, passed, sharpe, max_drawdown, reason, run_at</td></tr>
+  </table>
+
+  <h3>6.2 Full Cycle</h3>
+  <p>Startup vetting → seed price history → poll live prices (skip symbol on failure, never substitute a stale price) → append to history → build evaluate-set (approved strategies + any demoted strategy with an open position) → evaluate signals → open on approved buy signals sized via half-Kelly → close on any sell signal regardless of approval status → log equity → check re-vet interval → sleep 300s → repeat.</p>
+
+  <h3>6.3 Transaction Cost Model</h3>
+  <div class="code-block">
+    <span class="tag">Fees &amp; Slippage — applied to every simulated fill</span>
+<pre>TAKER_FEE_RATE = 0.001   <span class="comment">// 0.1% — matches real Binance spot taker fee</span>
+SLIPPAGE_RATE = 0.0005   <span class="comment">// 0.05% fixed unfavorable slippage, every trade</span>
+
+<span class="comment">// buy fills above market price; sell fills below — always unfavorable to the bot</span></pre>
+  </div>
+  <p><code>Portfolio</code> raises explicit errors (insufficient funds, insufficient position) rather than silently permitting an impossible trade — no negative-balance or phantom-position states are reachable.</p>
+
+  <h3>6.4 External Dependency</h3>
+  <table>
+    <tr><th>Endpoint</th><th>Purpose</th><th>Auth Required</th></tr>
+    <tr><td>GET /api/v3/ticker/price</td><td>Current live price, per symbol</td><td>None (public)</td></tr>
+    <tr><td>GET /api/v3/klines</td><td>Historical candles for backtesting and sparklines</td><td>None (public)</td></tr>
+  </table>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 06 · Backend &amp; Data Flow</span></div>
+</section>
+
+<!-- ===================== 07 RESULTS ===================== -->
+<section class="page content">
+  <h2><span class="num">07</span>Results, Impact &amp; Current State</h2>
+  <div class="kicker">Measured, not projected — pulled live from the running system</div>
+
+  <h3>7.1 Measured Performance</h3>
+  <table>
+    <tr><th>Operation</th><th>Measured Result</th></tr>
+    <tr><td>Live price fetch (single symbol)</td><td>~440 ms (network round-trip to Binance)</td></tr>
+    <tr><td>Historical candle fetch (500 hourly candles)</td><td>~361 ms</td></tr>
+    <tr><td>Backtest execution (500 candles, one strategy)</td><td>5.0 ms</td></tr>
+    <tr><td>Full test suite</td><td>67 tests passed in 0.24 s</td></tr>
+  </table>
+  <p style="font-size:11px; color:#777;">Measured on the development machine at report time; network-dependent figures vary with connection quality.</p>
+
+  <h3>7.2 Current Live State</h3>
+  <table>
+    <tr><th>Metric</th><th>Value</th></tr>
+    <tr><td>Starting balance</td><td>$10,000.00 (simulated)</td></tr>
+    <tr><td>Current equity</td><td>$9,907.63</td></tr>
+    <tr><td>Total trades logged</td><td>9 (8 closed, 1 open)</td></tr>
+    <tr><td>Realized P&amp;L</td><td>−$29.33</td></tr>
+    <tr><td>Equity history data points</td><td>360</td></tr>
+    <tr><td>Strategy backtest runs logged</td><td>54 (14 passed)</td></tr>
+  </table>
+
+  <h3>7.3 Delivered Features</h3>
+  <table>
+    <tr><th>Feature</th><th>Status</th></tr>
+    <tr><td>Live multi-symbol price polling with per-symbol fault isolation</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Three deterministic strategies (SMA cross, RSI, momentum)</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Historical backtest gate (Sharpe / drawdown / trade-count)</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Half-Kelly position sizing from real backtested edge</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Real fee + slippage simulation on every fill</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Periodic self re-vetting (promote / demote strategies)</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Dashboard — wallet, per-coin sparklines, equity curve, trade log</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>Color-coded position cards, optional auto-refresh</td><td class="status-complete">COMPLETE</td></tr>
+    <tr><td>67-test automated suite covering engine, strategies, backtest, loop</td><td class="status-complete">COMPLETE</td></tr>
+  </table>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 07 · Results &amp; Current State</span></div>
+</section>
+
+<section class="page content">
+  <div class="kicker">07 · Results, Impact &amp; Current State (continued)</div>
+  <h3>7.4 Future Scope</h3>
+  <p>A leverage/margin engine (isolated margin, long/short, real funding rate) has been built and independently tested but is not wired into the live loop. An episode/reset game-loop layer was scoped but not implemented. Both remain deliberately out of the current system to keep the live bot's behavior simple and auditable.</p>
+
+  <div class="callout">
+    <span class="label">Conclusion</span>
+    Every number in this report — the fee rates, the backtest thresholds, the live equity figure, the test count — was pulled directly from the running codebase and database at the time of writing, not written from memory or estimated. That is the operating principle the entire system was built against: never present a fabricated price, fill, or profit as if it were real.
+  </div>
+  <div class="footer-strip"><span>PAPER-TRADING-BOT — Technical Report</span><span>Section 07 · Results &amp; Current State</span></div>
+</section>
+
+</body>
+</html>

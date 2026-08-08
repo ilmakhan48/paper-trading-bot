@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ilma Khanum Trading Bot — Built by AFTERLEXX</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  @page { size: A4; margin: 0; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: #0B0F14;
+    background: #ffffff;
+  }
+
+  /* ---------- palette (matches the live dashboard) ---------- */
+  :root {
+    --bg: #0B0F14;
+    --ink: #E7ECF1;
+    --sub: #7C8B99;
+    --gain: #2DD48A;
+    --loss: #FF5A5A;
+    --rule: rgba(255,255,255,0.12);
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm 18mm;
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- cover page ---------- */
+  .cover {
+    background: radial-gradient(circle at 20% 15%, rgba(45,212,138,0.18), transparent 45%), var(--bg);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .logo-box {
+    display: inline-block;
+    border: 1px dashed rgba(255,255,255,0.3);
+    color: var(--sub);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    border-radius: 6px;
+    margin-bottom: 48px;
+    width: fit-content;
+  }
+  .cover .badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(45,212,138,0.15);
+    color: var(--gain);
+    margin-bottom: 18px;
+  }
+  .cover h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.15;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.01em;
+  }
+  .cover .brand-line {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gain);
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+  .cover .tagline {
+    color: var(--sub);
+    font-size: 15px;
+    max-width: 420px;
+    line-height: 1.6;
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+  .cover .meta {
+    position: absolute;
+    bottom: 20mm;
+    left: 18mm;
+    right: 18mm;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--sub);
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+
+  /* ---------- about page ---------- */
+  .about {
+    background: #F5F7F9;
+  }
+  .about .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2F6F5E;
+    margin-bottom: 8px;
+  }
+  .about h2 { font-family: 'Source Serif 4', serif; font-size: 28px; margin: 0 0 20px 0; }
+  .about .quote {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    line-height: 1.75;
+    color: #1C2B39;
+    border-left: 3px solid var(--gain);
+    padding-left: 20px;
+    margin: 0 0 28px 0;
+  }
+  .signoff {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #2F6F5E;
+    margin-top: 30px;
+  }
+
+  .toc-list { list-style: none; padding: 0; margin: 20px 0 0 0; }
+  .toc-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dotted #C7D0D8;
+    font-size: 14px;
+    color: #1C2B39;
+  }
+  .toc-list li span.n { font-family: 'JetBrains Mono', monospace; color: #2F6F5E; margin-right: 10px; }
+
+  /* ---------- content pages ---------- */
+  .content { background: #ffffff; color: #1C2B39; }
+  .content h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 24px;
+    color: #0B0F14;
+    border-bottom: 2px solid #0B0F14;
+    padding-bottom: 10px;
+    margin: 0 0 20px 0;
+  }
+  .content h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gain);
+    margin-right: 10px;
+  }
+  .content h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1C2B39;
+    margin: 28px 0 10px 0;
+  }
+  .content p { font-size: 13.5px; line-height: 1.7; color: #33424D; }
+  .content .lede {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #1C2B39;
+    background: #F5F7F9;
+    border-left: 3px solid var(--gain);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 22px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 22px 0; font-size: 12.5px; }
+  th {
+    text-align: left;
+    background: #0B0F14;
+    color: var(--ink);
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  td { padding: 8px 12px; border-bottom: 1px solid #E2E7EB; color: #33424D; }
+  tr:nth-child(even) td { background: #F8FAFB; }
+
+  .code-block {
+    background: #0B0F14;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 10px 0 18px 0;
+    overflow: hidden;
+  }
+  .code-block .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gain);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .code-block pre {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .code-block .comment { color: var(--sub); }
+
+  .rule-card {
+    background: #F5F7F9;
+    border: 1px solid #E2E7EB;
+    border-left: 4px solid var(--gain);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 0 0 14px 0;
+    font-size: 12.5px;
+  }
+  .rule-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: #2F6F5E;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .diagram {
+    background: #0B0F14;
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 14px 0; }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 16px 34px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #33424D;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gain);
+    color: #0B0F14;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps li b { color: #0B0F14; }
+
+  .disclaimer {
+    background: #FFF6F0;
+    border: 1px solid #F0D9C8;
+    border-left: 4px solid var(--loss);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #5A3A2A;
+  }
+
+  .footer-strip {
+    position: absolute;
+    bottom: 12mm;
+    left: 18mm;
+    right: 18mm;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: #9AA6AE;
+    border-top: 1px solid #E2E7EB;
+    padding-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== COVER ===================== -->
+<section class="page cover">
+  <div class="logo-box">[ AFTERLEXX LOGO ]</div>
+  <div class="badge">LIVE · INTERNAL DOCUMENTATION</div>
+  <h1>Ilma Khanum<br>Trading Bot</h1>
+  <div class="brand-line">Built by AFTERLEXX</div>
+  <div class="tagline">
+    A crypto paper-trading system that trades BTC, ETH, and SOL against real live prices with simulated money — rule-based strategies, a real backtest gate, half-Kelly sizing, and a periodic self re-vetting loop that promotes and demotes its own strategies over time.
+  </div>
+  <div class="meta">
+    <span>v1.0 — Engineering Documentation</span>
+    <span>real prices, fake money, and it never lies.</span>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="page about">
+  <div class="kicker">About This Bot</div>
+  <h2>Why I built this</h2>
+  <p class="quote">
+    I built this. It's a paper-trading bot for crypto — BTC, ETH, and SOL — that trades against real, live market prices with simulated money, using rule-based strategies that have to prove themselves on real historical data before they're allowed anywhere near a live decision. No strategy goes live on a hunch. No fill, price, or profit in this system is ever fabricated — if the bot can't get a real number, it says so and skips the cycle instead of making one up.
+  </p>
+  <p class="quote">
+    I built it with Claude (Anthropic) as my AI engineering partner — not as a black-box "AI trading brain" bolted onto the front, but as the tool I used to design, implement, test, and review every module in this codebase, task by task, with real test evidence at every step. This document is that system, written down completely enough that anyone on the AFTERLEXX team could stand up an identical instance from scratch.
+  </p>
+  <div class="signoff">— Ilma Khanum, AFTERLEXX</div>
+
+  <div class="kicker" style="margin-top:40px;">Table of Contents</div>
+  <ul class="toc-list">
+    <li><span><span class="n">01</span>Overview</span><span>tech stack, scope</span></li>
+    <li><span><span class="n">02</span>Architecture</span><span>system diagram</span></li>
+    <li><span><span class="n">03</span>Core Build Principles</span><span>the real rules behind every module</span></li>
+    <li><span><span class="n">04</span>System Components</span><span>data · signal · risk · execution · re-vetting · dashboard</span></li>
+    <li><span><span class="n">05</span>Operational Guide</span><span>the 11-step live cycle</span></li>
+    <li><span><span class="n">06</span>Setup & Configuration</span><span>keys, env, dependencies</span></li>
+    <li><span><span class="n">07</span>Rebuilding From Scratch</span><span>build order</span></li>
+    <li><span><span class="n">08</span>Disclaimer</span><span>internal use, risk notice</span></li>
+  </ul>
+</section>
+
+<!-- ===================== 01 OVERVIEW ===================== -->
+<section class="page content">
+  <h2><span class="num">01</span>Overview</h2>
+  <p class="lede">Runs a continuous paper-trading loop against three cryptocurrencies, using real live prices, real (simulated) fees and slippage, and rule-based strategies that are only allowed to trade if they pass a real backtest first. Every few hours it re-checks its own strategies against fresh data and promotes or demotes them automatically — that's the "learns from its mistakes" behavior. It does not execute real trades, hold real funds, or connect to any exchange account.</p>
+
+  <table>
+    <tr><th>Assets traded</th><td>BTC/USDT, ETH/USDT, SOL/USDT (Binance spot pairs)</td></tr>
+    <tr><th>Mode</th><td>Paper trading — simulated cash, real prices</td></tr>
+    <tr><th>Starting balance</th><td>$10,000.00 (simulated)</td></tr>
+    <tr><th>Data source</th><td>Binance public REST API — no API key required</td></tr>
+    <tr><th>Language / runtime</th><td>Python 3.9</td></tr>
+    <tr><th>Persistence</th><td>SQLite — single local .db file</td></tr>
+    <tr><th>Dashboard</th><td>Streamlit + Altair</td></tr>
+    <tr><th>Strategies</th><td>SMA crossover, RSI threshold, Momentum — rule-based, no runtime LLM inference</td></tr>
+    <tr><th>Position sizing</th><td>Half-Kelly, from each strategy's real backtested win rate & payoff ratio</td></tr>
+    <tr><th>Poll interval</th><td>Every 300 seconds (5 minutes)</td></tr>
+    <tr><th>Re-vet interval</th><td>Every 72 cycles (~6 hours)</td></tr>
+    <tr><th>AI's role</th><td>Development partner — design, implementation, testing, review. Not a runtime trading component.</td></tr>
+  </table>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 01 · Overview</span></div>
+</section>
+
+<!-- ===================== 02 ARCHITECTURE ===================== -->
+<section class="page content">
+  <h2><span class="num">02</span>Architecture</h2>
+  <p class="lede">Two independent OS processes share one SQLite file: the background loop (writer) and the dashboard (reader, plus one live price call of its own for unrealized P&amp;L).</p>
+  <div class="diagram">                    ┌─────────────────────────┐
+                    │   Binance Public REST    │
+                    │  api.binance.com/api/v3  │
+                    │  (ticker/price, klines)  │
+                    └────────────┬─────────────┘
+                                 │  live price + candle data
+                                 ▼
+┌──────────────────────────────────────────────────────────────┐
+│                  tradingbot/loop/main.py                       │
+│                 (background process, runs forever)             │
+│                                                                  │
+│  vet_strategies() ──▶ backtest.run_backtest() ──▶ approved list │
+│  (every 72 cycles)     (Sharpe / drawdown /                     │
+│                          trade-count gate)                      │
+│                                                                  │
+│  live price ──▶ strategy.signal() ──▶ buy / sell / hold         │
+│  (per symbol,        (SMA / RSI /                                │
+│   per cycle)           Momentum)                                 │
+│                              │                                   │
+│                              ▼                                   │
+│                sizing.kelly.position_size()                      │
+│                (half-Kelly, real win-rate + payoff ratio)        │
+│                              │                                   │
+│                              ▼                                   │
+│                engine.broker.Broker                              │
+│                (fee + slippage, mutates Portfolio)                │
+└───────────────────────────────┬────────────────────────────────┘
+                                 ▼
+                  ┌─────────────────────────────┐
+                  │   SQLite (tradingbot.db)      │
+                  │ trades / equity_history /     │
+                  │ strategy_runs                 │
+                  └───────────────┬───────────────┘
+                                  ▼
+                  ┌─────────────────────────────┐
+                  │  tradingbot/dashboard/app.py  │
+                  │  Streamlit — reads DB + one    │
+                  │  live price call                │
+                  └─────────────────────────────┘</div>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 02 · Architecture</span></div>
+</section>
+
+<!-- ===================== 03 CORE BUILD PRINCIPLES ===================== -->
+<section class="page content">
+  <h2><span class="num">03</span>Core Build Principles</h2>
+  <p class="lede">The actual operating rules I held Claude to throughout development — the real instructions that shaped every module in Section 04, not illustrative examples. Every commit in this codebase was built and reviewed against these.</p>
+
+  <div class="rule-card">
+    <span class="label">RULE — Never fake a fill, a price, or a profit</span>
+    Applies to every module that touches money or market data. If a real price/fill/fee can't be obtained, the system says so and skips that unit of work — never substitutes a guessed or last-known-good value and presents it as current.
+  </div>
+  <div class="rule-card">
+    <span class="label">RULE — Verify, don't guess</span>
+    Every constant, formula, and API assumption was checked against real API responses or official docs before being written into code. Where a value genuinely couldn't be verified, it's explicitly disclosed as an assumption, not presented as fact.
+  </div>
+  <div class="rule-card">
+    <span class="label">RULE — A strategy only trades live if it earns it</span>
+    No strategy is wired into the live loop directly. It must pass a real backtest against real historical candles first, and it's re-checked periodically — passing once is not permanent.
+  </div>
+  <div class="rule-card">
+    <span class="label">RULE — Every task ships with real test evidence</span>
+    Each module was built test-first, with actual pytest output attached to every commit, plus an independent code review pass before being marked done.
+  </div>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 03 · Core Build Principles</span></div>
+</section>
+
+<!-- ===================== 04 COMPONENTS (split across pages) ===================== -->
+<section class="page content">
+  <h2><span class="num">04</span>System Components</h2>
+
+  <h3>4.1 — Market Data Layer <span style="color:#7C8B99; font-weight:400;">tradingbot/data/binance_feed.py</span></h3>
+  <p>Fetches real live prices and historical candles from Binance's public spot API. No API key required.</p>
+  <div class="code-block">
+    <span class="tag">Market Data Fetch</span>
+<pre>BASE_URL = "https://api.binance.com/api/v3"
+
+def get_price(symbol):
+    <span class="comment"># GET {BASE_URL}/ticker/price?symbol={symbol}
+    # Raises PriceFetchError on non-200 — never returns a stale price.</span>
+
+def get_klines(symbol, interval, limit):
+    <span class="comment"># GET {BASE_URL}/klines?symbol=&interval=&limit=
+    # Returns [{open_time, open, high, low, close, volume}, ...]</span></pre>
+  </div>
+
+  <h3>4.2 — Signal Layer <span style="color:#7C8B99; font-weight:400;">tradingbot/strategies/</span></h3>
+  <p>Three independent, deterministic, rule-based strategies. Each implements <code>signal(closes) -&gt; "buy" | "sell" | "hold"</code>.</p>
+  <div class="code-block">
+    <span class="tag">SMA Crossover — fast=10, slow=30</span>
+<pre>if fast_prev <= slow_prev and fast_now > slow_now: return "buy"
+if fast_prev >= slow_prev and fast_now < slow_now: return "sell"</pre>
+  </div>
+  <div class="code-block">
+    <span class="tag">RSI Threshold — period=14, oversold=30, overbought=70</span>
+<pre>if rsi_prev <= oversold and rsi_now > oversold: return "buy"
+if rsi_prev >= overbought and rsi_now < overbought: return "sell"</pre>
+  </div>
+  <div class="code-block">
+    <span class="tag">Momentum — lookback=20, threshold=0.0</span>
+<pre>ret = (closes[-1] - closes[-(lookback+1)]) / closes[-(lookback+1)]
+if ret > threshold: return "buy"
+if ret < -threshold: return "sell"</pre>
+  </div>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 04 · System Components</span></div>
+</section>
+
+<section class="page content">
+  <h3>4.3 — Risk Layer <span style="color:#7C8B99; font-weight:400;">tradingbot/backtest/ + tradingbot/sizing/</span></h3>
+  <p>Backtest gate — a strategy earns the right to trade live:</p>
+  <div class="code-block">
+    <span class="tag">Backtest Pass Gate</span>
+<pre>FEE_RATE = 0.001  <span class="comment">// 0.1%, same as live taker fee</span>
+
+passed = sharpe > 0 and max_drawdown < 0.5 and num_trades >= 2</pre>
+  </div>
+  <p>Position sizing — half-Kelly, from the strategy's own real backtested trade outcomes:</p>
+  <div class="code-block">
+    <span class="tag">Half-Kelly Position Sizing</span>
+<pre>def kelly_fraction(win_rate, payoff_ratio):
+    p, q, b = win_rate, 1 - win_rate, payoff_ratio
+    if b <= 0: return 0.0
+    return max(0.0, min((b*p - q) / b, 1.0))
+
+def position_size(equity, win_rate, payoff_ratio, fraction=0.5):
+    return equity * kelly_fraction(win_rate, payoff_ratio) * fraction</pre>
+  </div>
+
+  <h3>4.4 — Execution Layer <span style="color:#7C8B99; font-weight:400;">tradingbot/engine/broker.py + portfolio.py</span></h3>
+  <p>Applies real, honest transaction costs to every simulated fill:</p>
+  <div class="code-block">
+    <span class="tag">Fees &amp; Slippage</span>
+<pre>TAKER_FEE_RATE = 0.001   <span class="comment">// 0.1% — matches real Binance fee schedule</span>
+SLIPPAGE_RATE = 0.0005   <span class="comment">// 0.05% fixed unfavorable slippage, every trade</span>
+
+<span class="comment">// buy fills above market; sell fills below — always unfavorable</span></pre>
+  </div>
+  <p><code>Portfolio</code> raises real errors (<code>InsufficientFundsError</code>, <code>InsufficientPositionError</code>) rather than silently allowing an impossible trade.</p>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 04 · System Components</span></div>
+</section>
+
+<section class="page content">
+  <h3>4.5 — Re-vetting Layer <span style="color:#7C8B99; font-weight:400;">tradingbot/loop/main.py</span></h3>
+  <p>The "learns from its mistakes" behavior. Every 72 cycles (~6 hours), every strategy is re-backtested against fresh 500-candle hourly history:</p>
+  <div class="code-block">
+    <span class="tag">Periodic Re-vetting</span>
+<pre>REVET_INTERVAL_CYCLES = 72  <span class="comment">// 6 hours at the 300s poll interval</span>
+
+def maybe_revet(conn, cycles_since_vet, approved_strategies, ...):
+    cycles_since_vet += 1
+    if cycles_since_vet < revet_interval:
+        return approved_strategies, cycles_since_vet
+    try:
+        new_approved, _ = vet_fn(conn)
+    except (PriceFetchError, RequestException):
+        <span class="comment">// keep current approvals, retry next interval — never crash</span>
+        return approved_strategies, 0
+    return new_approved, 0</pre>
+  </div>
+  <p>A strategy that starts failing gets demoted — blocked from new positions, but still allowed to close any position it already holds. A previously-rejected strategy that starts passing gets promoted.</p>
+
+  <h3>4.6 — Dashboard <span style="color:#7C8B99; font-weight:400;">tradingbot/dashboard/app.py</span></h3>
+  <p>Streamlit + Altair, reads directly from SQLite plus one live price call for unrealized P&amp;L. Dark terminal theme, wallet breakdown, per-coin cards with 24h sparklines, color-coded open-position cards, gradient equity curve, trade log, and honest strategy vetting history.</p>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 04 · System Components</span></div>
+</section>
+
+<!-- ===================== 05 OPERATIONAL GUIDE ===================== -->
+<section class="page content">
+  <h2><span class="num">05</span>Step-by-Step Operational Guide</h2>
+  <p class="lede">The full cycle, exactly as <code>tradingbot/loop/main.py</code> executes it every 300 seconds.</p>
+  <ol class="steps">
+    <li><b>Startup vetting</b> — on process start, fetch 500 hourly candles per symbol, backtest all 3 strategies against each, log every result to <code>strategy_runs</code>, build the initial approved list.</li>
+    <li><b>Seed price history</b> — reuse the same 500-candle series as the starting live signal history.</li>
+    <li><b>Poll live prices</b> — fetch current price per symbol. On failure, skip that symbol this cycle only — never substitute a stale price.</li>
+    <li><b>Append to price history</b> — each successful price grows that symbol's running series.</li>
+    <li><b>Build the evaluate-set</b> — currently-approved combos, plus any demoted combo that still has an open position.</li>
+    <li><b>Evaluate signals</b> — call <code>strategy.signal(closes)</code> for each combo in the evaluate-set.</li>
+    <li><b>Act on buy signals</b> — if approved and no position is open: size via half-Kelly, open the trade.</li>
+    <li><b>Act on sell signals</b> — if a position is open: close it, regardless of current approval status.</li>
+    <li><b>Log equity</b> — compute total portfolio equity, insert one row into <code>equity_history</code>.</li>
+    <li><b>Re-vet check</b> — every 72 cycles, re-run vetting and replace the approved list (errors keep current approvals, never crash).</li>
+    <li><b>Sleep</b> — wait 300 seconds, repeat from step 3.</li>
+  </ol>
+  <p>Any unexpected exception in a single cycle is caught at the top level and logged — it never kills the loop process.</p>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 05 · Operational Guide</span></div>
+</section>
+
+<!-- ===================== 06 SETUP ===================== -->
+<section class="page content">
+  <h2><span class="num">06</span>Setup &amp; Configuration</h2>
+  <p class="lede"><b>API keys required: none.</b> Binance's spot <code>ticker/price</code> and <code>klines</code> endpoints are public and unauthenticated. No <code>.env</code> file, no secrets, by design.</p>
+
+  <table>
+    <tr><th>Constant</th><th>Value</th><th>Meaning</th></tr>
+    <tr><td>SYMBOLS</td><td>["BTCUSDT","ETHUSDT","SOLUSDT"]</td><td>Traded pairs</td></tr>
+    <tr><td>POLL_SECONDS</td><td>300</td><td>Live poll interval</td></tr>
+    <tr><td>REVET_INTERVAL_CYCLES</td><td>72</td><td>Re-vetting interval (~6 hrs)</td></tr>
+    <tr><td>STARTING_CASH</td><td>10000.0</td><td>Simulated starting balance</td></tr>
+    <tr><td>DB_PATH</td><td>"tradingbot.db"</td><td>SQLite file location</td></tr>
+  </table>
+
+  <div class="code-block">
+    <span class="tag">requirements.txt</span>
+<pre>requests>=2.31
+pandas>=2.2
+numpy>=1.26
+streamlit>=1.35
+pytest>=8.0
+<span class="comment">// altair installs transitively via streamlit — pin explicitly if you ever swap it out</span></pre>
+  </div>
+
+  <div class="code-block">
+    <span class="tag">Run it</span>
+<pre>pip install -r requirements.txt
+
+python -m tradingbot.loop.main          <span class="comment">// background trading loop</span>
+streamlit run tradingbot/dashboard/app.py   <span class="comment">// dashboard, separate terminal</span></pre>
+  </div>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 06 · Setup &amp; Configuration</span></div>
+</section>
+
+<!-- ===================== 07 REBUILD ===================== -->
+<section class="page content">
+  <h2><span class="num">07</span>Rebuilding From Scratch</h2>
+  <ol class="steps">
+    <li>Set up the four core packages: <code>data/</code> (market data), <code>strategies/</code> (signal generation), <code>backtest/</code> (pass/fail gate), <code>sizing/</code> (Kelly position sizing).</li>
+    <li>Build <code>engine/</code> (portfolio state, broker fill logic, SQLite schema/CRUD) on top — the only layer that mutates money state.</li>
+    <li>Wire it together in <code>loop/main.py</code> following the 11-step cycle in Section 05 exactly — vet once at startup, then poll / evaluate / act / log / sleep, with periodic re-vetting layered on top.</li>
+    <li>Build <code>dashboard/app.py</code> as a read-only consumer of the same SQLite file, plus its own single live price call for unrealized P&amp;L display.</li>
+    <li>At every step, hold to Section 03's four rules — especially "never fake a fill, a price, or a profit." That rule is what separates this from a toy backtest dressed up as a live system.</li>
+  </ol>
+  <div class="footer-strip"><span>Ilma Khanum Trading Bot — AFTERLEXX</span><span>Section 07 · Rebuilding From Scratch</span></div>
+</section>
+
+<!-- ===================== 08 DISCLAIMER ===================== -->
+<section class="page content">
+  <h2><span class="num">08</span>Disclaimer</h2>
+  <div class="disclaimer">
+    This system is for internal AFTERLEXX use only. It trades with simulated money against real market data — it does not execute real trades, hold real funds, or connect to any exchange account. Nothing in this document or the underlying codebase constitutes financial advice. Trading cryptocurrency involves substantial risk of loss; past backtest performance does not predict future results. Do not represent this system's output as investment advice to any third party.
+  </div>
+  <p style="margin-top:60px; text-align:center; font-family:'JetBrains Mono', monospace; color:#7C8B99; font-size:12px;">
+    Ilma Khanum Trading Bot — Built by AFTERLEXX<br>real prices, fake money, and it never lies.
+  </p>
+</section>
+
+</body>
+</html>

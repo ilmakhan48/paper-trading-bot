@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.venv312/
+venv/
+*.egg-info/
+.pytest_cache/
+*.db
+*.log
+.playwright-mcp/
+.superpowers/
